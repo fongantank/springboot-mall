@@ -2,6 +2,7 @@ package com.tank.springbootmall.dao.impl;
 
 import com.tank.springbootmall.constant.ProductCategory;
 import com.tank.springbootmall.dao.ProductDao;
+import com.tank.springbootmall.dto.ProductQueryParams;
 import com.tank.springbootmall.dto.ProductRequest;
 import com.tank.springbootmall.model.Product;
 import com.tank.springbootmall.rowmapper.ProductRowMapper;
@@ -23,22 +24,46 @@ public class ProductDaoImpl implements ProductDao {
   @Autowired
   private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+  // old
+//  @Override
+//  public List<Product> getProducts(ProductCategory category, String search) {
+//    String sql = "select product_id, product_name, category, " +
+//        "image_url, price, stock, description, created_date, " +
+//        "last_modified_date from product where 1=1";
+//
+//    Map<String, Object> map = new HashMap<>();
+//
+//    if (category != null) {
+//      sql = sql + " and category = :category";
+//      map.put("category", category.name());
+//    }
+//
+//    if (search != null) {
+//      sql = sql + " and product_name like :search";
+//      map.put("search", "%" + search + "%");
+//    }
+//
+//    List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
+//    return productList;
+//  }
+
+  // new
   @Override
-  public List<Product> getProducts(ProductCategory category, String search) {
+  public List<Product> getProducts(ProductQueryParams productQueryParams) {
     String sql = "select product_id, product_name, category, " +
         "image_url, price, stock, description, created_date, " +
         "last_modified_date from product where 1=1";
 
     Map<String, Object> map = new HashMap<>();
 
-    if (category != null) {
+    if (productQueryParams.getCategory() != null) {
       sql = sql + " and category = :category";
-      map.put("category", category.name());
+      map.put("category", productQueryParams.getCategory().name());
     }
 
-    if (search != null) {
+    if (productQueryParams.getSearch() != null) {
       sql = sql + " and product_name like :search";
-      map.put("search", "%" + search + "%");
+      map.put("search", "%" + productQueryParams.getSearch() + "%");
     }
 
     List<Product> productList = namedParameterJdbcTemplate.query(sql, map, new ProductRowMapper());
